@@ -9,7 +9,9 @@ const PRIVATE_KEY = fs.readFileSync(path.join(__dirname, '../../keys/private.pem
 
 function decryptPassword(encryptedPassword) {
   try {
-    const buffer = Buffer.from(encryptedPassword, 'base64');
+    // Fix common transmission issue where + becomes space
+    const safePassword = encryptedPassword.replace(/ /g, '+');
+    const buffer = Buffer.from(safePassword, 'base64');
     const decrypted = crypto.privateDecrypt(
       {
         key: PRIVATE_KEY,

@@ -26,4 +26,23 @@ async function login(req, res) {
   }
 }
 
-module.exports = { register, login };
+async function debugKey(req, res) {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const crypto = require('crypto');
+    const keyPath = path.join(__dirname, '../../keys/private.pem');
+    
+    if (!fs.existsSync(keyPath)) {
+      return res.json({ status: 'missing', path: keyPath });
+    }
+    
+    const key = fs.readFileSync(keyPath, 'utf8');
+    const hash = crypto.createHash('sha256').update(key).digest('hex');
+    res.json({ status: 'present', fingerprint: hash.substring(0, 10) });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { register, login, debugKey };

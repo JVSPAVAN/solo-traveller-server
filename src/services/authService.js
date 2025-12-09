@@ -26,7 +26,7 @@ function decryptPassword(encryptedPassword) {
   }
 }
 
-async function register({ email, encryptedPassword }) {
+async function register({ email, encryptedPassword, name }) {
   const existingUser = await User.findOne({ email }); // Mongoose syntax
   if (existingUser) {
     throw new Error('User already exists');
@@ -38,9 +38,10 @@ async function register({ email, encryptedPassword }) {
   const user = await User.create({
     email,
     password_hash,
+    name: name || '',
   });
 
-  return { id: user._id, email: user.email };
+  return { id: user._id, email: user.email, name: user.name };
 }
 
 async function login({ email, encryptedPassword }) {
@@ -62,11 +63,40 @@ async function login({ email, encryptedPassword }) {
     { expiresIn: '1h' }
   );
 
-  return { token, user: { id: user._id, email: user.email } };
+  return {
+    token,
+    user: {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      location: user.location,
+      bio: user.bio
+    }
+  };
+}
+
+async function updateProfile(userId, data) {
+  // Prevent updating sensitive fields like password or email directly here if not desired (simplified for now)
+  const allowedUpdates = ['name', 'phone', 'location', 'bio'];
+  const updateData = {};
+  
+  Object.keys(data).forEach(key => {
+    if (allowedUpdates.includes(key)) {
+      updateData[key] = data[key];
+    }
+  });
+
+  const user = await User.findByIdAndUpdate(userId, updateData, { new: true, select: '-password_hash' });
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user;
 }
 
 module.exports = {
   register,
   login,
+  updateProfile,
   decryptPassword,
 };

@@ -45,4 +45,17 @@ async function debugKey(req, res) {
   }
 }
 
-module.exports = { register, login, debugKey };
+async function updateProfile(req, res) {
+  try {
+    // req.user is set by verifyToken middleware (which needs to be applied to this route)
+    if (!req.user || !req.user.id) {
+       return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const result = await authService.updateProfile(req.user.id, req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+module.exports = { register, login, debugKey, updateProfile };

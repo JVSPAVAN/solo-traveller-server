@@ -20,8 +20,11 @@ function decryptPassword(encryptedPassword) {
       buffer
     );
     return decrypted.toString('utf8');
+    return decrypted.toString('utf8');
   } catch (error) {
-    throw new Error('Password decryption failed');
+    // Debugging: Expose real error
+    console.error("Decryption inner error:", error);
+    throw new Error(`Decryption failed: ${error.message}. Payload len: ${encryptedPassword ? encryptedPassword.length : 0}`);
   }
 }
 

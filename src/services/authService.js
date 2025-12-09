@@ -9,17 +9,15 @@ const PRIVATE_KEY = fs.readFileSync(path.join(__dirname, '../../keys/private.pem
 
 function decryptPassword(encryptedPassword) {
   try {
-    // Fix common transmission issue where + becomes space
-    const safePassword = encryptedPassword.replace(/ /g, '+');
-    const buffer = Buffer.from(safePassword, 'base64');
+    const buffer = Buffer.from(encryptedPassword, 'base64');
     const decrypted = crypto.privateDecrypt(
       {
         key: PRIVATE_KEY,
-        padding: crypto.constants.RSA_PKCS1_PADDING,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+        oaepHash: "sha256",
       },
       buffer
     );
-    return decrypted.toString('utf8');
     return decrypted.toString('utf8');
   } catch (error) {
     // Debugging: Expose real error

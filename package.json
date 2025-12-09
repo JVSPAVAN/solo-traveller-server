@@ -4,7 +4,7 @@
   "description": "Backend for SoloTraveller application",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --security-revert=CVE-2023-46809 src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "cross-env NODE_ENV=test jest",
     "generate-keys": "node scripts/generateKeys.js"

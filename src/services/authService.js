@@ -26,7 +26,7 @@ function decryptPassword(encryptedPassword) {
   }
 }
 
-async function register({ email, encryptedPassword, name }) {
+async function register({ email, encryptedPassword, name, location, bio }) {
   const existingUser = await User.findOne({ email }); // Mongoose syntax
   if (existingUser) {
     throw new Error('User already exists');
@@ -39,9 +39,11 @@ async function register({ email, encryptedPassword, name }) {
     email,
     password_hash,
     name: name || '',
+    location: location || '',
+    bio: bio || '',
   });
 
-  return { id: user._id, email: user.email, name: user.name };
+  return { id: user._id, email: user.email, name: user.name, location: user.location, bio: user.bio };
 }
 
 async function login({ email, encryptedPassword }) {

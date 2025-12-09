@@ -73,14 +73,15 @@ async function login({ email, encryptedPassword }) {
       name: user.name,
       phone: user.phone,
       location: user.location,
-      bio: user.bio
+      bio: user.bio,
+      plan: user.plan || 'free'
     }
   };
 }
 
 async function updateProfile(userId, data) {
   // Prevent updating sensitive fields like password or email directly here if not desired (simplified for now)
-  const allowedUpdates = ['name', 'phone', 'location', 'bio'];
+  const allowedUpdates = ['name', 'phone', 'location', 'bio', 'plan'];
   const updateData = {};
   
   Object.keys(data).forEach(key => {

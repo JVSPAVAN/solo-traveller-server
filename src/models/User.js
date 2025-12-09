@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  plan: {
+    type: String,
+    enum: ['free', 'standard', 'pro'],
+    default: 'free',
+  },
   password_hash: {
     type: String,
     required: true,
